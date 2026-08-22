@@ -2,3 +2,8 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# промежуточные файлы сверки с чужими библиотеками
+scripts/oracle-check/*.json
+scripts/oracle-check/cron-parser.cjs
+scripts/oracle-check/venv
