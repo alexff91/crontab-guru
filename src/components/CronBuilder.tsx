@@ -32,10 +32,12 @@ function FieldSelect({ label, value, options, labelMap, onChange }: {
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-xs text-gray-500 uppercase tracking-wider font-medium">{label}</label>
+      {/* On a phone the control is a finger target: 44px tall, 16px type so
+          iOS does not zoom the page on focus. Wider screens keep the old size. */}
       <select
         value={options.includes(value) ? value : ''}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-gray-800 text-white rounded-lg px-3 py-2.5 border border-gray-700 focus:border-blue-500 focus:outline-none text-sm"
+        className="bg-gray-800 text-white rounded-lg px-3 py-2.5 border border-gray-700 focus:border-blue-500 focus:outline-none min-h-11 text-base sm:min-h-0 sm:text-sm"
       >
         {!options.includes(value) && <option value="">{value} (custom)</option>}
         {options.map((opt) => (
@@ -48,7 +50,7 @@ function FieldSelect({ label, value, options, labelMap, onChange }: {
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-gray-800 text-gray-300 font-mono text-xs px-3 py-1.5 rounded border border-gray-700 focus:border-blue-500 focus:outline-none"
+        className="bg-gray-800 text-gray-300 font-mono px-3 py-1.5 rounded border border-gray-700 focus:border-blue-500 focus:outline-none min-h-11 text-base sm:min-h-0 sm:text-xs"
         placeholder="or type..."
       />
     </div>
@@ -79,7 +81,7 @@ export default function CronBuilder({ minute, hour, dayOfMonth, month, dayOfWeek
       </div>
       <button
         onClick={() => navigator.clipboard.writeText(`${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`)}
-        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
+        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors min-h-11 sm:min-h-0"
       >
         Copy Expression
       </button>
