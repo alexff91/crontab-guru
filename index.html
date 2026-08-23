@@ -3,10 +3,117 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crontab Guru - Cron Expression Builder</title>
+    <title>Crontab Guru — build a cron schedule and see when it actually runs</title>
+    <meta name="description" content="Build a cron expression field by field, read it back in plain English, and see the next five runs as real dates. Warns about the day-of-month / day-of-week rule, where cron runs on either field, not both." />
+    <link rel="canonical" href="https://cron.alftech.space/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#030712" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="alftech" />
+    <meta property="og:title" content="Crontab Guru — build a cron schedule and see when it actually runs" />
+    <meta property="og:description" content="Assembles the five cron fields one at a time, explains the result in plain English and lists the next five runs. Flags the case where cron counts days differently than people expect." />
+    <meta property="og:url" content="https://cron.alftech.space/" />
+    <meta property="og:image" content="https://cron.alftech.space/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Crontab Guru: the cron builder, the plain-English reading of the expression and the next five runs." />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Crontab Guru — build a cron schedule and see when it actually runs" />
+    <meta name="twitter:description" content="Five cron fields, a plain-English reading and the next five runs. Runs in the browser." />
+    <meta name="twitter:image" content="https://cron.alftech.space/og.png" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Crontab Guru",
+      "url": "https://cron.alftech.space/",
+      "description": "A cron expression builder and explainer. Assembles the five fields one at a time, reads the expression back in plain English and lists the next five runs. Handles ranges, lists, steps, month and weekday names and @daily-style macros, and refuses the non-standard L, W and # extensions instead of guessing at them.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any (web browser)",
+      "browserRequirements": "Requires JavaScript",
+      "inLanguage": "en",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
+
+    <!-- The app is a client-side bundle, so the raw HTML a crawler or a chat
+         link preview receives used to be an empty <div>. This block is the page
+         until the bundle boots: real, visible content, not hidden keywords.
+         React clears the container on its first render and replaces it. Styles
+         are inline rather than Tailwind classes because Tailwind only emits the
+         classes it finds while scanning source, and this markup must stand on
+         its own before any stylesheet of the app applies. -->
+    <style>
+      .pre {
+        background: #030712;
+        color: #d1d5db;
+        min-height: 100vh;
+        margin: 0;
+        font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      .pre .inner { max-width: 900px; margin: 0 auto; padding: 24px 16px 56px; }
+      .pre h1 { font-size: 26px; line-height: 1.2; font-weight: 700; color: #fff; margin: 0 0 4px; }
+      .pre h1 .star { color: #fbbf24; }
+      .pre .tagline { color: #6b7280; font-size: 14px; margin: 0 0 28px; }
+      .pre h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; font-weight: 600; margin: 32px 0 12px; }
+      .pre p { margin: 0 0 16px; max-width: 68ch; }
+      .pre ul { margin: 0 0 16px; padding-left: 20px; }
+      .pre li { margin-bottom: 8px; }
+      .pre code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 14px; color: #fbbf24;
+        background: #111827; border: 1px solid #1f2937; border-radius: 5px; padding: 1px 5px;
+        white-space: nowrap;
+      }
+      .pre .schedules { list-style: none; padding: 0; }
+      .pre .schedules li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+      .pre .note { color: #9ca3af; font-size: 14px; }
+      @media (min-width: 640px) {
+        .pre h1 { font-size: 32px; }
+        .pre .inner { padding: 40px 24px 72px; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div class="pre"><div class="inner">
+      <h1><span class="star">*</span> Crontab Guru</h1>
+      <p class="tagline">Cron expression builder and explainer</p>
+
+      <p>You wrote a schedule for a job and you are not certain when it will actually fire. Crontab Guru puts the expression together one field at a time — minute, hour, day of month, month, day of week — reads the result back in plain English, and lists the next five runs as real dates and times.</p>
+
+      <p>It also flags the case where cron does not count the way most people assume. When both the day-of-month field and the day-of-week field are restricted, the job runs whenever <strong>either</strong> one matches, not only when both do. <code>0 0 1 * 1</code> fires on the 1st of every month <em>and</em> on every Monday — not just on Mondays that happen to be the 1st. Getting that backwards turns a schedule that runs about five times a month into one you think runs once a year.</p>
+
+      <h2>What it handles</h2>
+      <ul>
+        <li>Ranges, lists and steps: <code>1-5</code>, <code>1,15,30</code>, <code>*/15</code></li>
+        <li>Month and weekday names: <code>JAN</code>, <code>MON</code></li>
+        <li>Macros pasted straight out of a real crontab: <code>@hourly</code>, <code>@daily</code>, <code>@midnight</code>, <code>@weekly</code>, <code>@monthly</code>, <code>@yearly</code></li>
+        <li><code>7</code> as Sunday in the day-of-week field, and <code>?</code> in either day field</li>
+        <li>Schedules that can never fire: <code>0 0 30 2 *</code> is reported as having no matching date, instead of being given an invented one</li>
+        <li>The non-standard <code>L</code>, <code>W</code> and <code>#</code> extensions are rejected with a message naming the field, rather than being quietly misread</li>
+      </ul>
+
+      <h2>Common schedules</h2>
+      <ul class="schedules">
+        <li><code>* * * * *</code> <span>every minute</span></li>
+        <li><code>*/5 * * * *</code> <span>every 5 minutes</span></li>
+        <li><code>0 * * * *</code> <span>at minute 0 of every hour</span></li>
+        <li><code>0 0 * * *</code> <span>at 00:00 every day</span></li>
+        <li><code>0 9 * * *</code> <span>at 09:00 every day</span></li>
+        <li><code>0 9 * * 1</code> <span>at 09:00 on Monday</span></li>
+        <li><code>0 9 * * 1-5</code> <span>at 09:00, Monday through Friday</span></li>
+        <li><code>0 0 1 * *</code> <span>at midnight on the 1st of each month</span></li>
+        <li><code>0 0 1 1 *</code> <span>at midnight on January 1st</span></li>
+        <li><code>0 0 1 * 1</code> <span>both day fields set — the 1st and every Monday</span></li>
+      </ul>
+
+      <p class="note">Everything is computed in your browser. No account, no upload, nothing sent anywhere.</p>
+    </div></div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
