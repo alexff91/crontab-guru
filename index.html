@@ -73,9 +73,26 @@
       .pre .schedules { list-style: none; padding: 0; }
       .pre .schedules li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
       .pre .note { color: #9ca3af; font-size: 14px; }
+      /* Who made it, where the others are, and what could be wrong with it. A
+         footer link is a tap target like any other, and an inline link is only
+         as tall as its own text, so on a phone the anchors become 44px
+         inline-block boxes. The height goes on the anchors rather than on the
+         paragraph: the line holding one grows, the sentence around it keeps a
+         readable line height instead of being stretched to finger pitch. */
+      .pre .colophon {
+        border-top: 1px solid #1f2937; margin: 30px 0 0; padding-top: 14px;
+        color: #9ca3af; font-size: 14px; line-height: 1.65;
+      }
+      .pre .colophon p { margin: 0; }
+      .pre .colophon p + p { margin-top: 8px; }
+      .pre .colophon a {
+        color: #d1d5db; display: inline-block; min-height: 44px; line-height: 44px;
+      }
+      .pre .colophon .sep { padding: 0 4px; opacity: 0.45; }
       @media (min-width: 640px) {
         .pre h1 { font-size: 32px; }
         .pre .inner { padding: 40px 24px 72px; }
+        .pre .colophon a { display: inline; min-height: 0; line-height: inherit; }
       }
     </style>
   </head>
@@ -113,7 +130,12 @@
       </ul>
 
       <p class="note">Everything is computed in your browser. No account, no upload, nothing sent anywhere.</p>
+
+      <div class="colophon">
+        <p>Crontab Guru by alftech <span class="sep">·</span> more tools at <a href="https://alftech.space/">alftech.space</a></p>
+        <p>The next runs come from this page's own parser, checked against croniter and two other cron implementations. If an expression is read back wrongly, or the runs are not when your crontab would actually fire, write to <a href="mailto:a@alftech.space?subject=cron.alftech.space">a@alftech.space</a> and I will fix it.</p>
+      </div>
     </div></div></div>
-    <script type="module" src="/src/main.tsx"></script>
+      <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
