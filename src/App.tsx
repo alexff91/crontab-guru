@@ -42,7 +42,7 @@ function App() {
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold">
-            <span className="text-amber-400">*</span> Crontab Guru
+            <span className="text-amber-400">*</span> Cron Builder
           </h1>
           <p className="text-gray-500 text-sm mt-1">Cron Expression Builder &amp; Explainer</p>
         </div>
@@ -66,7 +66,7 @@ function App() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12 py-6 text-center text-gray-600 text-sm">
-        Crontab Guru &mdash; Build and understand cron expressions
+        Cron Builder &mdash; Build and understand cron expressions
       </footer>
     </div>
   );
