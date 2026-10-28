@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 interface CronBuilderProps {
   minute: string;
   hour: string;
@@ -5,6 +7,8 @@ interface CronBuilderProps {
   month: string;
   dayOfWeek: string;
   onChange: (field: string, value: string) => void;
+  onWhole?: (text: string) => void;
+  explainer?: ReactNode;
 }
 
 const minuteOptions = ['*', '*/5', '*/10', '*/15', '*/30', ...Array.from({ length: 60 }, (_, i) => String(i))];
@@ -30,61 +34,41 @@ function FieldSelect({ label, value, options, labelMap, onChange }: {
   onChange: (val: string) => void;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs text-gray-500 uppercase tracking-wider font-medium">{label}</label>
-      {/* On a phone the control is a finger target: 44px tall, 16px type so
-          iOS does not zoom the page on focus. Wider screens keep the old size. */}
-      <select
-        value={options.includes(value) ? value : ''}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-gray-800 text-white rounded-lg px-3 py-2.5 border border-gray-700 focus:border-blue-500 focus:outline-none min-h-11 text-base sm:min-h-0 sm:text-sm"
-      >
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
+      <label className="wb-label" style={{ margin: 0 }}>{label}</label>
+      <input type="text" className="wb-field" value={value} onChange={(e) => onChange(e.target.value)}
+        style={{ fontSize: 18, fontWeight: 500, textAlign: 'center' }} spellCheck={false} aria-label={`${label} — type`} />
+      <select className="wb-field" style={{ padding: '9px 8px', fontSize: 13 }} value={options.includes(value) ? value : ''} onChange={(e) => onChange(e.target.value)} aria-label={`${label} — pick`}>
         {!options.includes(value) && <option value="">{value} (custom)</option>}
         {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {labelMap ? labelMap[opt] || opt : opt}
-          </option>
+          <option key={opt} value={opt}>{labelMap ? labelMap[opt] || opt : opt}</option>
         ))}
       </select>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-gray-800 text-gray-300 font-mono px-3 py-1.5 rounded border border-gray-700 focus:border-blue-500 focus:outline-none min-h-11 text-base sm:min-h-0 sm:text-xs"
-        placeholder="or type..."
-      />
     </div>
   );
 }
 
-export default function CronBuilder({ minute, hour, dayOfMonth, month, dayOfWeek, onChange }: CronBuilderProps) {
+export default function CronBuilder({ minute, hour, dayOfMonth, month, dayOfWeek, onChange, onWhole, explainer }: CronBuilderProps) {
+  const expression = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
   return (
-    <div className="space-y-4">
-      <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
-        <div className="font-mono text-2xl text-center text-green-400 tracking-widest mb-4">
-          {minute} {hour} {dayOfMonth} {month} {dayOfWeek}
+    <div className="wb-stack">
+      <section className="wb-slab">
+        <label className="wb-label" htmlFor="whole">Expression — paste a whole line or edit below</label>
+        <input id="whole" key={expression} defaultValue={expression} onBlur={(e) => onWhole?.(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') onWhole?.((e.target as HTMLInputElement).value); }}
+          style={{ fontSize: 'clamp(28px, 6vw, 46px)', letterSpacing: '.08em' }} spellCheck={false} />
+        <div style={{ marginTop: 14, minHeight: 40 }}>{explainer}</div>
+        <div className="wb-row" style={{ marginTop: 12 }}>
+          <button className="wb-btn acc" onClick={() => navigator.clipboard.writeText(expression)}>Copy expression</button>
         </div>
-        <div className="flex items-center justify-center gap-1 text-xs text-gray-500">
-          <span className="px-2">min</span>
-          <span className="px-2">hour</span>
-          <span className="px-2">day</span>
-          <span className="px-2">month</span>
-          <span className="px-2">weekday</span>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+      </section>
+      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
         <FieldSelect label="Minute" value={minute} options={minuteOptions} onChange={(v) => onChange('minute', v)} />
         <FieldSelect label="Hour" value={hour} options={hourOptions} onChange={(v) => onChange('hour', v)} />
-        <FieldSelect label="Day of Month" value={dayOfMonth} options={domOptions} onChange={(v) => onChange('dayOfMonth', v)} />
+        <FieldSelect label="Day of month" value={dayOfMonth} options={domOptions} onChange={(v) => onChange('dayOfMonth', v)} />
         <FieldSelect label="Month" value={month} options={monthOptions} labelMap={monthLabels} onChange={(v) => onChange('month', v)} />
-        <FieldSelect label="Day of Week" value={dayOfWeek} options={dowOptions} labelMap={dowLabels} onChange={(v) => onChange('dayOfWeek', v)} />
+        <FieldSelect label="Day of week" value={dayOfWeek} options={dowOptions} labelMap={dowLabels} onChange={(v) => onChange('dayOfWeek', v)} />
       </div>
-      <button
-        onClick={() => navigator.clipboard.writeText(`${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`)}
-        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors min-h-11 sm:min-h-0"
-      >
-        Copy Expression
-      </button>
     </div>
   );
 }

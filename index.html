@@ -48,53 +48,6 @@
          are inline rather than Tailwind classes because Tailwind only emits the
          classes it finds while scanning source, and this markup must stand on
          its own before any stylesheet of the app applies. -->
-    <style>
-      .pre {
-        background: #030712;
-        color: #d1d5db;
-        min-height: 100vh;
-        margin: 0;
-        font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      }
-      .pre .inner { max-width: 900px; margin: 0 auto; padding: 24px 16px 56px; }
-      .pre h1 { font-size: 26px; line-height: 1.2; font-weight: 700; color: #fff; margin: 0 0 4px; }
-      .pre h1 .star { color: #fbbf24; }
-      .pre .tagline { color: #6b7280; font-size: 14px; margin: 0 0 28px; }
-      .pre h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; font-weight: 600; margin: 32px 0 12px; }
-      .pre p { margin: 0 0 16px; max-width: 68ch; }
-      .pre ul { margin: 0 0 16px; padding-left: 20px; }
-      .pre li { margin-bottom: 8px; }
-      .pre code {
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 14px; color: #fbbf24;
-        background: #111827; border: 1px solid #1f2937; border-radius: 5px; padding: 1px 5px;
-        white-space: nowrap;
-      }
-      .pre .schedules { list-style: none; padding: 0; }
-      .pre .schedules li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
-      .pre .note { color: #9ca3af; font-size: 14px; }
-      /* Who made it, where the others are, and what could be wrong with it. A
-         footer link is a tap target like any other, and an inline link is only
-         as tall as its own text, so on a phone the anchors become 44px
-         inline-block boxes. The height goes on the anchors rather than on the
-         paragraph: the line holding one grows, the sentence around it keeps a
-         readable line height instead of being stretched to finger pitch. */
-      .pre .colophon {
-        border-top: 1px solid #1f2937; margin: 30px 0 0; padding-top: 14px;
-        color: #9ca3af; font-size: 14px; line-height: 1.65;
-      }
-      .pre .colophon p { margin: 0; }
-      .pre .colophon p + p { margin-top: 8px; }
-      .pre .colophon a {
-        color: #d1d5db; display: inline-block; min-height: 44px; line-height: 44px;
-      }
-      .pre .colophon .sep { padding: 0 4px; opacity: 0.45; }
-      @media (min-width: 640px) {
-        .pre h1 { font-size: 32px; }
-        .pre .inner { padding: 40px 24px 72px; }
-        .pre .colophon a { display: inline; min-height: 0; line-height: inherit; }
-      }
-    </style>
   </head>
   <body>
     <div id="root"><div class="pre"><div class="inner">

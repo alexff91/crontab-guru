@@ -9,24 +9,17 @@ export default function Presets({ onSelect, currentExpression }: PresetsProps) {
   const presets = getPresets();
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-5 border border-gray-700">
-      <h3 className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-3">Common Presets</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+    <section>
+      <h2 className="wb-h2">Common schedules</h2>
+      <div className="wb-list">
         {presets.map((preset) => (
-          <button
-            key={preset.expression}
-            onClick={() => onSelect(preset.expression)}
-            className={`text-left px-3 py-2.5 rounded-lg transition-colors ${
-              currentExpression === preset.expression
-                ? 'bg-blue-600/20 border border-blue-600/50 text-blue-300'
-                : 'bg-gray-800 border border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white'
-            }`}
-          >
-            <div className="font-medium text-sm">{preset.label}</div>
-            <div className="font-mono text-xs mt-0.5 text-gray-500">{preset.expression}</div>
+          <button key={preset.expression} onClick={() => onSelect(preset.expression)} aria-pressed={currentExpression === preset.expression}
+            style={{ display: 'flex', justifyContent: 'space-between', gap: 12, width: '100%', background: currentExpression === preset.expression ? 'var(--acc)' : 'transparent', border: 0, borderBottom: '1px solid var(--line)', padding: '10px 6px', cursor: 'pointer', textAlign: 'left', color: 'var(--ink)', font: 'inherit' }}>
+            <span style={{ fontSize: 15 }}>{preset.label}</span>
+            <span className="wb-mono" style={{ fontSize: 13, color: 'var(--soft)' }}>{preset.expression}</span>
           </button>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

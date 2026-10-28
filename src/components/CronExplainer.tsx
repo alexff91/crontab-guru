@@ -18,16 +18,15 @@ export default function CronExplainer({ expression }: CronExplainerProps) {
   }
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-5 border border-gray-700">
-      <h3 className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-2">Human-Readable</h3>
+    <div>
       {error ? (
-        <p className="text-red-400 text-sm">{error}</p>
+        <p className="wb-mono" style={{ color: '#ff8fa0', fontSize: 14, margin: 0 }}>{error}</p>
       ) : (
         <>
-          <p className="text-lg text-blue-300 font-medium">{summary}</p>
+          <p style={{ margin: 0, fontSize: 'clamp(20px, 3.4vw, 28px)', lineHeight: 1.25, letterSpacing: '-.02em', color: '#fff', fontWeight: 600 }}>{summary}</p>
           {/* Оговорки показываем отдельно: без них фраза выше была бы неполной правдой. */}
           {notes.map((note, i) => (
-            <p key={i} className="text-amber-300/90 text-sm mt-2 leading-relaxed">{note}</p>
+            <p key={i} style={{ color: 'var(--acc)', fontSize: 14, margin: '8px 0 0', lineHeight: 1.5 }}>{note}</p>
           ))}
         </>
       )}

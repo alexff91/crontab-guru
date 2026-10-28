@@ -5,12 +5,16 @@ import NextRuns from './components/NextRuns';
 import Presets from './components/Presets';
 import { parseCronExpression } from './utils/cron-parser';
 
+// Opens on a schedule people actually write — weekdays at nine — so the page
+// shows its answer before anyone types.
+const START = ['0', '9', '*', '*', '1-5'];
+
 function App() {
-  const [minute, setMinute] = useState('*');
-  const [hour, setHour] = useState('*');
-  const [dayOfMonth, setDayOfMonth] = useState('*');
-  const [month, setMonth] = useState('*');
-  const [dayOfWeek, setDayOfWeek] = useState('*');
+  const [minute, setMinute] = useState(START[0]);
+  const [hour, setHour] = useState(START[1]);
+  const [dayOfMonth, setDayOfMonth] = useState(START[2]);
+  const [month, setMonth] = useState(START[3]);
+  const [dayOfWeek, setDayOfWeek] = useState(START[4]);
 
   const expression = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
 
@@ -37,37 +41,31 @@ function App() {
     }
   };
 
+  // Paste a whole line ("*/15 2 * * 0") into the big field and it splits itself.
+  const handleWhole = (text: string) => {
+    const parts = text.trim().split(/\s+/);
+    if (parts.length === 5) handlePresetSelect(parts.join(' '));
+  };
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold">
-            <span className="text-amber-400">*</span> Cron Builder
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">Cron Expression Builder &amp; Explainer</p>
-        </div>
+    <div className="wb">
+      <header className="wb-top">
+        <a className="wb-brand" href="https://alftech.space/"><i />ALFTECH</a>
+        <nav><a href="https://regex.alftech.space/">regex</a><a href="https://json.alftech.space/">json</a></nav>
       </header>
-
-      <main className="max-w-5xl mx-auto px-4 py-8 space-y-6">
-        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-          <CronBuilder
-            minute={minute}
-            hour={hour}
-            dayOfMonth={dayOfMonth}
-            month={month}
-            dayOfWeek={dayOfWeek}
-            onChange={handleFieldChange}
-          />
+      <main className="wb-main">
+        <div className="wb-eyebrow">Cron builder · runs in your browser</div>
+        <h1 className="wb-h1">Five fields, <em>one</em> plain sentence.</h1>
+        <p className="wb-lede">Type or pick each field and read back what the schedule means, with the next five times it will fire — the quickest way to catch a job that runs at 9 p.m. instead of 9 a.m.</p>
+        <div className="wb-stack">
+          <CronBuilder minute={minute} hour={hour} dayOfMonth={dayOfMonth} month={month} dayOfWeek={dayOfWeek}
+            onChange={handleFieldChange} onWhole={handleWhole} explainer={<CronExplainer expression={expression} />} />
+          <div className="wb-grid2">
+            <NextRuns expression={expression} />
+            <Presets onSelect={handlePresetSelect} currentExpression={expression} />
+          </div>
         </div>
-
-        <CronExplainer expression={expression} />
-        <NextRuns expression={expression} />
-        <Presets onSelect={handlePresetSelect} currentExpression={expression} />
       </main>
-
-      <footer className="border-t border-gray-800 mt-12 py-6 text-center text-gray-600 text-sm">
-        Cron Builder &mdash; Build and understand cron expressions
-      </footer>
     </div>
   );
 }
