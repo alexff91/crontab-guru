@@ -7,7 +7,10 @@ interface CronBuilderProps {
   month: string;
   dayOfWeek: string;
   onChange: (field: string, value: string) => void;
+  /** Text of the big box: the draft while someone types there, else the five fields. */
+  whole?: string;
   onWhole?: (text: string) => void;
+  onWholeDone?: () => void;
   explainer?: ReactNode;
 }
 
@@ -48,14 +51,16 @@ function FieldSelect({ label, value, options, labelMap, onChange }: {
   );
 }
 
-export default function CronBuilder({ minute, hour, dayOfMonth, month, dayOfWeek, onChange, onWhole, explainer }: CronBuilderProps) {
+export default function CronBuilder({ minute, hour, dayOfMonth, month, dayOfWeek, onChange, whole, onWhole, onWholeDone, explainer }: CronBuilderProps) {
   const expression = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
   return (
     <div className="wb-stack">
       <section className="wb-slab">
         <label className="wb-label" htmlFor="whole">Expression — paste a whole line or edit below</label>
-        <input id="whole" key={expression} defaultValue={expression} onBlur={(e) => onWhole?.(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') onWhole?.((e.target as HTMLInputElement).value); }}
+        <input id="whole" value={whole ?? expression} onChange={(e) => onWhole?.(e.target.value)}
+          onBlur={() => onWholeDone?.()}
+          onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+          autoCapitalize="off" autoCorrect="off" autoComplete="off"
           style={{ fontSize: 'clamp(28px, 6vw, 46px)', letterSpacing: '.08em' }} spellCheck={false} />
         <div style={{ marginTop: 14, minHeight: 40 }}>{explainer}</div>
         <div className="wb-row" style={{ marginTop: 12 }}>

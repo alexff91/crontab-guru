@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import NextRuns from '../NextRuns';
 import CronExplainer from '../CronExplainer';
+import CronBuilder from '../CronBuilder';
+import { liveExpression } from '../../utils/cron-parser';
 
 // Проверяем не расчёт, а то, что на экран попадает: правильные числа мало
 // стоят, если рядом с ними стоит подпись, которая их искажает.
@@ -56,5 +58,35 @@ describe('CronExplainer', () => {
 
   it('shows the parse error rather than a plausible sentence', () => {
     expect(render(<CronExplainer expression="0 0 1 * MON#2" />)).toMatch(/nth weekday. extension/);
+  });
+});
+
+// 13 Nov 2026: typing a whole line into the top box left the sentence and the
+// next runs describing the previous schedule until Enter or blur.
+describe('whole-line box, while typing', () => {
+  it('explains the draft, not the fields it has not reached yet', () => {
+    const fields = '0 9 * * 1-5';
+    expect(liveExpression(null, fields)).toBe(fields);
+    expect(liveExpression('*/15 2 * *', fields)).toBe('*/15 2 * *');
+    expect(liveExpression('  */15   2 * * 0 ', fields)).toBe('*/15 2 * * 0');
+  });
+
+  it('a four-field draft reads as an error, not as the old sentence', () => {
+    const live = liveExpression('*/15 2 * *', '0 9 * * 1-5');
+    expect(render(<CronExplainer expression={live} />)).toMatch(/Expected 5 fields, got 4/);
+    expect(render(<NextRuns expression={live} />)).toMatch(/Expected 5 fields, got 4/);
+  });
+
+  it('the fifth field makes it the new schedule at once', () => {
+    const live = liveExpression('*/15 2 * * 0', '0 9 * * 1-5');
+    const text = render(<CronExplainer expression={live} />);
+    expect(text).toMatch(/15th minute/i);
+    expect(text).toMatch(/Sunday/);
+    expect(text).not.toMatch(/Friday|hour 9/);
+  });
+
+  it('the box is controlled, so React re-renders it per keystroke', () => {
+    const html = renderToStaticMarkup(<CronBuilder minute="0" hour="9" dayOfMonth="*" month="*" dayOfWeek="1-5" whole="*/15 2" onChange={() => {}} onWhole={() => {}} />);
+    expect(html).toMatch(/id="whole"[^>]*value="\*\/15 2"/);
   });
 });

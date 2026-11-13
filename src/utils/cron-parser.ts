@@ -216,6 +216,17 @@ export function parseCronExpression(expression: string): CronFields {
   };
 }
 
+/**
+ * The expression the page should explain right now. While someone types in the
+ * whole-line box that is their text, however incomplete — "0 9 * *" must read
+ * "Expected 5 fields, got 4", not the sentence for the schedule that was there
+ * before. Once it is a full line it equals the five fields anyway.
+ */
+export function liveExpression(draft: string | null, fields: string): string {
+  if (draft === null) return fields;
+  return draft.trim().split(/\s+/).join(' ');
+}
+
 export function getExpandedValues(expression: string): {
   minutes: number[];
   hours: number[];
